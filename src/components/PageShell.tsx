@@ -21,7 +21,7 @@ export function PageShell({ children, className, wide = true }: PageShellProps) 
     <div className="relative min-h-screen bg-background bg-grid-texture">
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 h-[36rem] w-[36rem] -translate-x-1/2 -translate-y-1/3 rounded-full bg-accent/10 blur-[120px]"
+        className="pointer-events-none absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 -translate-y-1/3 rounded-full bg-accent/10 blur-[120px] md:h-[36rem] md:w-[36rem]"
       />
 
       <div
