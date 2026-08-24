@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-zinc-300 antialiased font-sans;
+    margin: 0;
+  }
+}
+
+@layer utilities {
+  .animate-reveal {
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+
+  /* A textura de grid bem sutil atrás das telas de verificação. */
+  .bg-grid-texture {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+}
+
+/*
+ * A borda "holográfica" atrás do card de veredito: um conic-gradient maior
+ * que o card, girando, com o próprio card por cima cobrindo o miolo — o que
+ * sobra visível é só o anel fino. `--holo-color` é a única coisa que muda
+ * entre ativo (esmeralda) e inativo (âmbar); ver StatusBadge/CertCard.
+ */
+@keyframes holoSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cert-holo::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    var(--holo-color, theme('colors.accent.DEFAULT')) 8%,
+    transparent 22%,
+    transparent 50%,
+    var(--holo-color, theme('colors.accent.DEFAULT')) 58%,
+    transparent 72%,
+    transparent 100%
+  );
+  filter: blur(1px);
+  animation: holoSpin var(--holo-duration, 7s) linear infinite;
+}
+
+/*
+ * Restrição de movimento é deliberada nesta página: é uma verificação de
+ * direitos autorais, não uma landing de vendas, e o pouco que se move
+ * carrega significado (pulso = selo vivo, sweep = "acabei de checar", giro
+ * do anel = certificado). Quem pede menos movimento recebe a mesma
+ * informação sem o efeito.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .animate-reveal,
+  .animate-seal-active,
+  .animate-seal-warning,
+  .animate-sweep-once {
+    animation: none;
+  }
+
+  .cert-holo::before {
+    display: none;
+  }
+}

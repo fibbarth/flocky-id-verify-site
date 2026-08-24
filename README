@@ -1,0 +1,68 @@
+# flocky-id-verify-site
+
+Página pública de verificação de selo do Flocky SecureBook — `/verify/FK-{autor}-{livro}`.
+Mostra se um livro está sob proteção autoral ativa, a partir de um endpoint público do
+`flocky-backend` (`GET /api/public/verify/{code}`).
+
+Reconstrução em React + Tailwind da antiga página server-rendered em `flocky.pro/verify/...`.
+
+## Stack
+
+Vite + React 19 + TypeScript + Tailwind 3, mesmas versões do `flocky-admin-frontend` (sem
+compartilhar código entre os dois repos). Deploy: Cloudflare Pages.
+
+## Rodando localmente
+
+```bash
+npm install
+cp .env.example .env
+npm run dev
+```
+
+`VITE_API_BASE_URL` no `.env` precisa apontar para um `flocky-backend` rodando (local ou
+`api-dev.flocky.pro`).
+
+## Código de demonstração
+
+`/verify/FK-9A72-4Q8X` funciona sem nenhum backend no ar — os dados vêm de
+`public/demo/fk-9a72-4q8x.json`, um JSON estático servido junto com o resto do site (tanto o SPA
+quanto a Cloudflare Pages Function leem esse arquivo direto, ver `sealVerify.ts` e
+`functions/verify/[code].ts`). É o link para mostrar a página funcionando — numa conversa de venda,
+por exemplo — antes de qualquer livro real ter selo emitido.
+
+## Duas variáveis de ambiente, dois momentos diferentes
+
+**`VITE_API_BASE_URL`** (`.env`, build-time) — usada pelo fetch client-side do React
+(`src/api/sealVerify.ts`). É embutida no bundle no momento do `npm run build`.
+
+**`API_BASE_URL`** (painel da Cloudflare, runtime) — usada só pela Cloudflare Pages Function em
+`functions/verify/[code].ts`, que injeta as meta tags dinâmicas (`og:title`, `og:image`, JSON-LD)
+por livro antes de responder a bots de rede social. Roda a cada request, não no build.
+
+As duas normalmente apontam para o mesmo host, mas são variáveis diferentes — configurar só uma
+delas produz um SPA funcionando com prévia de link quebrada, ou vice-versa. Ver o comentário no
+topo de `functions/verify/[code].ts`.
+
+## Meta tags dinâmicas por livro
+
+`functions/verify/[code].ts` é uma Cloudflare Pages Function — nasce automaticamente por estar
+nessa pasta, sem projeto ou deploy separado. Ela intercepta só `/verify/:code`, busca os dados do
+livro na API pública e reescreve `<title>`, `og:*`, `twitter:*` e o JSON-LD do `index.html`
+estático antes de servir — para bots e para pessoas reais igualmente.
+
+Testar localmente exige o Wrangler (não é coberto por `npm run dev`, que serve só o Vite):
+
+```bash
+npm run build
+npx wrangler pages dev ./dist
+curl -A "facebookexternalhit/1.1" http://localhost:8788/verify/FK-XXXX-XXXX | grep og:
+```
+
+## Deploy
+
+Projeto Cloudflare Pages, build `npm run build` → `dist`. `public/_redirects` cobre o fallback de
+SPA; `public/_headers` define o CSP (`connect-src` precisa listar todo host de API que este site
+fala — um ambiente novo sem essa entrada falha em silêncio no console, não com erro de CORS).
+
+O domínio final precisa ser decidido antes do deploy real: os QR codes já impressos apontam para
+`https://flocky.pro/verify/{code}` (`config('admin.seal_verify_url')` no backend).

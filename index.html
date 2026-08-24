@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#09090B" />
+
+    <!--
+      Meta tags padrão — servidas para "/" e qualquer rota que a Cloudflare
+      Pages Function não reescreva. Para "/verify/:code", functions/verify/[code].ts
+      substitui title/description/og:*/twitter:*/json-ld por dados reais do
+      livro antes de responder, então o que está aqui é só o fallback genérico.
+    -->
+    <title>Flocky SecureBook | Verificação de Proteção Autoral</title>
+    <meta
+      name="description"
+      content="Verifique a proteção autoral de um livro no sistema Flocky SecureBook. Monitoramento contínuo contra pirataria digital para autores independentes."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Flocky SecureBook" />
+    <meta property="og:title" content="Flocky SecureBook | Verificação de Proteção Autoral" />
+    <meta
+      property="og:description"
+      content="Verifique a proteção autoral de um livro no sistema Flocky SecureBook."
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Flocky SecureBook | Verificação de Proteção Autoral" />
+    <meta
+      name="twitter:description"
+      content="Verifique a proteção autoral de um livro no sistema Flocky SecureBook."
+    />
+    <meta name="author" content="Flocky - Copyright Protection" />
+    <meta name="robots" content="index,follow" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Cross-Origin-Opener-Policy: same-origin
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.flocky.pro https://api-dev.flocky.pro; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Sobre o Content-Security-Policy acima:
+#
+# connect-src lista os dois hosts do flocky-backend que este site fala:
+# produção (api.flocky.pro) e o ambiente de desenvolvimento (api-dev.flocky.pro).
+# Um ambiente novo (ex. staging) precisa do host adicionado aqui também, senão
+# o fetch client-side falha com "Refused to connect" no console — não um erro
+# de CORS ou HTTP.
+#
+# Sem diretivas de Turnstile: esta página não tem captcha nem formulário.
+#
+# style-src/font-src precisam de fonts.googleapis.com/fonts.gstatic.com porque
+# src/index.css importa a Inter via @import, e o Vite mantém esse @import no
+# CSS do build.
+#
+# img-src aceita https: em geral, e não uma lista de hosts, porque as capas
+# vêm da coluna `books.cover` do app legado — sem constraint nenhuma sobre o
+# CDN de origem (ver Book::coverUrl() no backend). Uma allowlist quebraria em
+# silêncio a cada host novo. O risco é baixo: imagem não executa script.
+#
+# Não há entrada de CSP para a Cloudflare Pages Function (functions/verify/[code].ts):
+# ela roda same-origin, então não precisa de diretiva nenhuma.
