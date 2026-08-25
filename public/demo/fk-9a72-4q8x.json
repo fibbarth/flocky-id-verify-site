@@ -6,7 +6,7 @@
     "cover_url": "https://www.flocky.com.br/new/livro-exemplo-capa.png",
     "amazon_url": "https://www.amazon.com.br/Votos-Por-Contrato-ebook/dp/B0G6V8SWTQ",
     "publication_date": "2024-03-10",
-    "is_prelaunch": false,
+    "is_prelaunch": true,
     "status": "active"
   }
 }
